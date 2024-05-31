@@ -1,7 +1,7 @@
 <template>
   <div style="padding: 10px">
     <h4>팔로워</h4>
-    <input placeholder="?" />
+    <input placeholder="?" @input="search($event.target.value)" />
     <div class="post-header" v-for="(a, i) in follower" :key="i">
       <div class="profile" :style="`background-image: url(${a.image})`"></div>
       <span class="profile-name">{{ a.name }}</span>
@@ -31,6 +31,7 @@ export default {
     //[data]
     //[ref] 데이터 생성 -> 무조건 ref써야햠 / 오브젝트안에 가둔다
     let follower = ref([]);
+    let followerOriginal = ref([]);
 
     //[reactive] - object, array 같은 reference data type
     let test = reactive({ name: "kim" });
@@ -68,11 +69,20 @@ export default {
       // 오브젝트안에 값을 넣어야 하므로 .value 써줘야함
       axios.get("/follower.json").then((a) => {
         follower.value = a.data;
+        followerOriginal.value = [...a.data];
       });
     });
 
+    function search(검색어) {
+      //문자열이 없으면 -1을 반환 ->검색한 문자열이 있으면 newFollower 넣어라
+      let newFollower = followerOriginal.value.filter((a) => {
+        return a.name.indexOf(검색어) != -1;
+      });
+      follower.value = [...newFollower];
+    }
+
     // 밖에서 쓸라면 return 을 해주어야함. 매우 중요.
-    return { follower, doThis };
+    return { follower, doThis, search };
 
     // props 쓰고 싶다면
   },

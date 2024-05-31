@@ -1,9 +1,12 @@
 <template>
   <div class="header">
     <ul class="header-button-left">
-      <li @click="step--">Cancel</li>
+      <!-- <li @click="step--" v-if="step != 3">Cancel</li>
+      <li @click="step = 0" v-if="step == 3">Cancel</li> -->
+      <li @click="stepmethod">Cancel</li>
     </ul>
     <ul class="header-button-right">
+      <li v-if="step == 0" @click="follow">팔로우</li>
       <li v-if="step == 1" @click="step++">Next</li>
       <li v-if="step == 2" @click="publish">발행</li>
     </ul>
@@ -40,7 +43,6 @@
   <!--=======================[ mapMutations ]===============================-->
   <!-- <button @click="증가(10)">mapMutations증가</button> -->
   <!--=======================================================================-->
-
 
   <!-- 컨테이너 props -->
   <Container
@@ -95,7 +97,7 @@ export default {
       게시물: Postdata,
       더보기: 0,
 
-      step: 3,
+      step: 0,
       이미지: "",
 
       // Container.vue 데이터 저장
@@ -136,7 +138,6 @@ export default {
     ...mapState({ 내이름: "name" }), //name 데이터를  '내이름'에 넣음
   },
 
-  
   methods: {
     ...mapMutations(["setMore", "좋아요", "증가"]),
     ...mapActions(["getData"]),
@@ -204,6 +205,22 @@ export default {
       };
       this.게시물.unshift(내게시물); // Array에 자료 넣어줌
       this.step = 0;
+    },
+
+    follow() {
+      this.step = 3;
+    },
+
+    stepmethod() {
+      if (this.step == 0) {
+        this.step = 0;
+      } else if (this.step == 1) {
+        this.step--;
+      } else if (this.step == 2) {
+        this.step--;
+      } else if (this.step == 3) {
+        this.step = 0;
+      }
     },
   },
 };
